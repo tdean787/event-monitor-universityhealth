@@ -1,5 +1,6 @@
 import requests
 import hashlib
+import os
 
 URL = "https://careers.universityhealth.com/events"
 HASH_FILE = "last_hash.txt"
@@ -13,11 +14,10 @@ def get_hash(content):
     return hashlib.md5(content.encode("utf-8")).hexdigest()
 
 def load_last_hash():
-    try:
+    if os.path.exists(HASH_FILE):
         with open(HASH_FILE, "r") as f:
             return f.read()
-    except FileNotFoundError:
-        return None
+    return None
 
 def save_current_hash(new_hash):
     with open(HASH_FILE, "w") as f:
@@ -33,6 +33,7 @@ def main():
         save_current_hash(current_hash)
     else:
         print("✅ No changes detected.")
+        save_current_hash(current_hash)  # Update the file even if unchanged
 
 if __name__ == "__main__":
     main()
