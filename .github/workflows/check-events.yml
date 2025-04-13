@@ -2,7 +2,7 @@ name: Check Events Page
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # every 6 hours
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -13,10 +13,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Download last hash (if exists)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: hash-file
-        continue-on-error: true  # in case it's the first run
+        continue-on-error: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,7 +30,7 @@ jobs:
         run: python script.py
 
       - name: Upload new hash
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hash-file
           path: last_hash.txt
