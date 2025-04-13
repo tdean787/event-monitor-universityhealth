@@ -3,14 +3,20 @@ name: Check Events Page
 on:
   schedule:
     - cron: '0 */6 * * *'   # every 6 hours
-  workflow_dispatch:         # allows manual triggering
+  workflow_dispatch:
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: Download last hash (if exists)
+        uses: actions/download-artifact@v3
+        with:
+          name: hash-file
+        continue-on-error: true  # in case it's the first run
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -20,5 +26,11 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run event check script
+      - name: Run script
         run: python script.py
+
+      - name: Upload new hash
+        uses: actions/upload-artifact@v3
+        with:
+          name: hash-file
+          path: last_hash.txt
